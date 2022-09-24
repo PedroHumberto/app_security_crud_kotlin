@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    android:background="@color/back_ground_app"
+    android:orientation="vertical"
+    android:paddingLeft="56dp"
+    android:paddingRight="56dp"
+    tools:context=".ui.home.HomeFragment">
+
+    <ImageView
+        android:id="@+id/img_home"
+        android:layout_width="153dp"
+        android:layout_height="97dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        app:srcCompat="?android:attr/alertDialogIcon"/>
+    <TextView
+        android:id="@+id/txt_msg_home"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:gravity="top"
+        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "/>
+    <TextView
+        android:id="@+id/txt_date_home"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="30/09/2022 - 10:45 AM"/>
+
+
+</LinearLayout>

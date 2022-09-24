@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    tools:context=".ui.main.SingUpFragment"
+    android:background="@color/back_ground_app"
+    >
+
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:textColor="@color/app_title_color"
+        android:text="Sing Up" />
+
+    <EditText
+        android:id="@+id/singup_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:hint="Email"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/singup_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
+    <Button
+        android:id="@+id/btn_singup"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Sing Up"
+        android:layout_marginTop="40dp"
+        />
+
+</LinearLayout>

@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "916243786193",
+    "project_id": "tp3-login-crud",
+    "storage_bucket": "tp3-login-crud.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916243786193:android:dbbb80eb7ecfa73bee98f0",
+        "android_client_info": {
+          "package_name": "com.example.app_notes_securty_as"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5gZZMzXJUozOSY4d9E-Z_gF4Rh73p30k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916243786193:android:1cdbd220ae8b8d84ee98f0",
+        "android_client_info": {
+          "package_name": "com.example.tp3_login_crud_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5gZZMzXJUozOSY4d9E-Z_gF4Rh73p30k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916243786193:android:0d13d88e4018c62bee98f0",
+        "android_client_info": {
+          "package_name": "com.example.tp3_segurana_formulario_pesquisa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5gZZMzXJUozOSY4d9E-Z_gF4Rh73p30k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916243786193-m2p72dn899s33dgokainsfnn99bpbj5t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

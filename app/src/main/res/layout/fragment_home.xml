@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    android:background="@color/back_ground_app"
+    android:id="@+id/container"
+    >
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="NOTES"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:textColor="@color/app_title_color"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/row_notes"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <Button
+        android:id="@+id/btn_noteform"
+        android:layout_width="150dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:text="Add Note" />
+
+
+</LinearLayout>
+

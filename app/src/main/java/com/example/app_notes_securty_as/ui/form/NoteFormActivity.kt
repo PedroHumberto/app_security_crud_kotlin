@@ -5,26 +5,39 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Base64.DEFAULT
+import android.util.Base64.decode
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.example.app_notes_securty_as.R
 import com.example.app_notes_securty_as.databinding.ActivityNoteFormBinding
+import com.example.app_notes_securty_as.domain.models.Note
+import com.example.app_notes_securty_as.service.NoteDAO
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
+import java.lang.Byte.decode
+import java.security.spec.PSSParameterSpec.DEFAULT
+import java.text.DateFormat.DEFAULT
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+
 
 class NoteFormActivity : AppCompatActivity() {
 
@@ -34,9 +47,13 @@ class NoteFormActivity : AppCompatActivity() {
     private lateinit var imgForm: ImageView
     private var storage = Firebase.storage
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    var imgUri : Uri? = null
-    private var teste = ""
+    var imgUri: Uri? = null
+    private val noteDAO = NoteDAO()
+    private lateinit var db: FirebaseFirestore
+    private lateinit var image: String
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNoteFormBinding.inflate(layoutInflater)
@@ -44,52 +61,22 @@ class NoteFormActivity : AppCompatActivity() {
         //register
         registerActivityforResult()
 
+        db = Firebase.firestore
 
         imgForm = binding.formImg
-
-        var storageRef = storage.reference
-        val mountainsRef = storageRef.child("teste.jpeg")
-
 
         //get image from internal
         imgForm.setOnClickListener {
             getImage()
         }
 
-
         binding.btnSave.setOnClickListener {
-            imgForm.isDrawingCacheEnabled = true
-            imgForm.buildDrawingCache()
-            val bitmap = (imgForm.drawable as BitmapDrawable).bitmap
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val data = baos.toByteArray()
+            saveData()
 
-            var uploadTask = mountainsRef.putBytes(data)
-            uploadTask.addOnFailureListener {
+        }
 
 
-                Log.d(TAG, "IMG ERR 1=> ${it.message}")
-                Log.d(TAG, "IMG ERR 2=> ${it.stackTrace}")
-                Log.d(TAG, "IMG ERR 3=> ${it.localizedMessage}")
-
-
-            }.addOnSuccessListener { taskSnapshot ->
-
-                Log.d(TAG, "IMG DATA 1=> ${taskSnapshot.storage.downloadUrl.toString()}")
-                Log.d(TAG, "IMG DATA 2=> ${taskSnapshot.toString()}")
-                teste = taskSnapshot.storage.downloadUrl.toString()
-
-            }
-
-            binding.btnTeste.setOnClickListener {
-                val httpsReference = storage.getReferenceFromUrl(
-                    teste
-                )
-                Log.d(TAG, "IMG TESTE=> ${httpsReference.toString()}")
-
-            }
-
+        binding.btnTeste.setOnClickListener {
 
         }
 
@@ -106,12 +93,12 @@ class NoteFormActivity : AppCompatActivity() {
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             activityResultLauncher.launch(intent)
-        }else{
+        } else {
 
         }
     }
 
-    fun getImage() {
+    private fun getImage() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -128,13 +115,13 @@ class NoteFormActivity : AppCompatActivity() {
         }
     }
 
-    fun registerActivityforResult() {
+    private fun registerActivityforResult() {
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback { result ->
                 val resultCode = result.resultCode
                 val imgData = result.data
-                if (resultCode == RESULT_OK && imgData != null){
+                if (resultCode == RESULT_OK && imgData != null) {
                     imgUri = imgData.data
 
                     imgUri.let {
@@ -144,5 +131,66 @@ class NoteFormActivity : AppCompatActivity() {
                     }
                 }
             })
+    }
+
+
+    private fun addNote(url: String, dateTime: String) {
+        val note = Note(
+            "${binding.editTitle.text}",
+            "${binding.editNote.text}",
+            "$dateTime",
+            url
+        )
+
+        noteDAO.addNote(note)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun saveData() {
+        //---------get date time------------------
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = current.format(formatter)
+        //--------get storage reference in FireBase------------------
+        var storageRef = storage.reference
+        val imgRef = storageRef.child("images").child("$dateTime.jpeg")
+        imgForm.isDrawingCacheEnabled = true
+        imgForm.buildDrawingCache()
+        val bitmap = (imgForm.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        //---------------upload image------------------------------------
+        var uploadTask = imgRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+        }.addOnSuccessListener { taskSnapshot ->
+            Log.d(TAG, "IMDATA  1=> ${taskSnapshot.uploadSessionUri}")
+
+            imgRef.downloadUrl.addOnSuccessListener { url ->
+                var imgURL = url.toString()
+                Log.d(TAG, "IMDATA  2=> ${imgURL}")
+                Log.d(TAG, "IMDATA  3=> ${url.toString()}")
+                addNote(imgURL, dateTime)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun imgBase64() {
+        imgForm.buildDrawingCache()
+        val bmap = imgForm.drawingCache
+        val bos = ByteArrayOutputStream()
+        bmap.compress(CompressFormat.PNG, 100, bos)
+        val bb = bos.toByteArray()
+        image = Base64.getEncoder().encodeToString(bb)
+        Log.d(TAG, "IMG => $image")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun decodeImgBase64() {
+        val imageBytes = Base64.getDecoder().decode(image)
+        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+        //binding.formImg2.setImageBitmap(decodedImage)
     }
 }

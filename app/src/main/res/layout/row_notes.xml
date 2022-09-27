@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp"
-    android:background="@color/back_ground_app"
+    android:background="@color/backgorud_row"
     android:orientation="vertical"
     android:paddingLeft="56dp"
     android:paddingRight="56dp"
@@ -13,25 +13,51 @@
 
     <ImageView
         android:id="@+id/img_home"
-        android:layout_width="153dp"
-        android:layout_height="97dp"
+        android:layout_width="147dp"
+        android:layout_height="81dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        app:srcCompat="?android:attr/alertDialogIcon"/>
+        app:srcCompat="?android:attr/alertDialogIcon" />
+
     <TextView
-        android:id="@+id/txt_msg_home"
+        android:id="@+id/txt_title"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="top"
-        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "/>
+        android:text="TITLE "
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txt_msg_home"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:gravity="top"
+            android:scrollbars="vertical"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
+
+    </ScrollView>
     <TextView
         android:id="@+id/txt_date_home"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="30/09/2022 - 10:45 AM"/>
+        android:text="30/09/2022 - 10:45 AM"
+        android:textColor="@color/black"
+        android:textStyle="bold|italic" />
 
 
 </LinearLayout>

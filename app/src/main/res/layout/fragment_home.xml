@@ -24,9 +24,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/row_notes"
-        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:layout_height="425dp"
+        android:layout_marginTop="35dp" />
 
     <Button
         android:id="@+id/btn_noteform"

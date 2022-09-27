@@ -1,5 +1,6 @@
 package com.example.app_notes_securty_as.ui.recyclerview
 
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,10 +43,21 @@ class NoteAdapter(noteListener: NoteListener) :
 
         fun bind(note: Note, noteListener: NoteListener, position: Int) {
             itemView.findViewById<TextView>(R.id.txt_title).text = note.title
-            itemView.findViewById<TextView>(R.id.txt_msg_home).text = note.note
+            var textNote = itemView.findViewById<TextView>(R.id.txt_msg_home)
+            textNote.text = note.note
+            textNote.movementMethod = ScrollingMovementMethod()
+
+            //----Desativa o foco de rolagem da Recycle e torna o texto como foco de rolagem-------
+            textNote.setOnTouchListener { v, motionEvent ->
+                v.parent.requestDisallowInterceptTouchEvent(true);
+                return@setOnTouchListener false;
+            }
+            textNote.movementMethod = ScrollingMovementMethod();
+            //------------------------------------------------------------------------------------
+
             itemView.findViewById<TextView>(R.id.txt_date_home).text = note.dateTime
             val img = itemView.findViewById<ImageView>(R.id.img_home)
-
+            //-----------GLIDE-------------------------
             Glide.with(itemView).load(note.url).into(img)
 
 

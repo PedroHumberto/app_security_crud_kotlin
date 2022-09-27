@@ -154,8 +154,6 @@ class NoteFormActivity : AppCompatActivity() {
         //--------get storage reference in FireBase------------------
         var storageRef = storage.reference
         val imgRef = storageRef.child("images").child("$dateTime.jpeg")
-        imgForm.isDrawingCacheEnabled = true
-        imgForm.buildDrawingCache()
         val bitmap = (imgForm.drawable as BitmapDrawable).bitmap
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -171,6 +169,7 @@ class NoteFormActivity : AppCompatActivity() {
                 Log.d(TAG, "IMDATA  2=> ${imgURL}")
                 Log.d(TAG, "IMDATA  3=> ${url.toString()}")
                 addNote(imgURL, dateTime)
+                finish()
             }
         }
     }

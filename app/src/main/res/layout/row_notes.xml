@@ -30,24 +30,14 @@
         android:textStyle="bold" />
 
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <TextView
+        android:id="@+id/txt_msg_home"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:gravity="top"
+        android:scrollbars="vertical"
+        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
 
-        <TextView
-            android:id="@+id/txt_msg_home"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:gravity="top"
-            android:scrollbars="vertical"
-            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
-
-    </ScrollView>
     <TextView
         android:id="@+id/txt_date_home"
         android:layout_width="match_parent"

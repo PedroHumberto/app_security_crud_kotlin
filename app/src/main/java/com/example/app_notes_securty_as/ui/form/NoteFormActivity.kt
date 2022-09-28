@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,19 +20,16 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.security.crypto.EncryptedFile
-import androidx.security.crypto.MasterKey
 import com.bumptech.glide.Glide
 import com.example.app_notes_securty_as.databinding.ActivityNoteFormBinding
 import com.example.app_notes_securty_as.domain.models.Note
+import com.example.app_notes_securty_as.service.Encrypter
 import com.example.app_notes_securty_as.service.NoteDAO
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -76,9 +72,20 @@ class NoteFormActivity : AppCompatActivity() {
             editTitle = binding.editTitle.text
             editNote = binding.editNote.text
             saveData()
-            cypher(editTitle.toString().toByteArray(), "title.txt")
+
             val baseImage = imgBase64().toByteArray()
-            cypher(baseImage, "image.fig")
+
+            Encrypter().cypher(
+                editTitle.toString().toByteArray(),
+                "TITLE(${dateTime()}).txt",
+                this,
+            )
+            Encrypter().cypher(
+                baseImage,
+                "image(${dateTime()}).fig",
+                this,
+            )
+
         }
 
         binding.btnTeste.setOnClickListener {
@@ -155,9 +162,7 @@ class NoteFormActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun saveData() {
         //---------get date time------------------
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val dateTime = current.format(formatter)
+        val dateTime = dateTime()
         //--------get storage reference in FireBase------------------
         var storageRef = storage.reference
         val imgRef = storageRef.child("images").child("$dateTime.jpeg")
@@ -175,10 +180,18 @@ class NoteFormActivity : AppCompatActivity() {
                 val imgURL = url.toString()
                 Log.d(TAG, "IMDATA  2=> ${imgURL}")
                 Log.d(TAG, "IMDATA  3=> ${url.toString()}")
-                addNote(imgURL, dateTime)
+                addNote(imgURL, dateTime!!)
                 finish()
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun dateTime(): String? {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = current.format(formatter)
+        return dateTime
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -202,43 +215,7 @@ class NoteFormActivity : AppCompatActivity() {
 
     }
 
-    private fun cypher(byteArray: ByteArray, fileName: String) {
-        val masterKey = MasterKey.Builder(this)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        val file = File(this.filesDir, fileName)
-        if (file.exists()) {
-            file.delete()
-        }
-        val encryptedFile = EncryptedFile.Builder(
-            this,
-            file,
-            masterKey,
-            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-        ).build()
-        val fos = encryptedFile.openFileOutput()
-        fos.write(byteArray)
-        fos.write(byteArray)
-        fos.close()
-    }
-    private fun decrypt(fileName: String) {
-        val masterKey = MasterKey.Builder(this)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        val file = File(this.filesDir, fileName)
-
-        val encryptedFile = EncryptedFile.Builder(
-            this,
-            file,
-            masterKey,
-            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-        ).build()
-        val fos = encryptedFile.openFileInput()
-        val bytes = fos.readBytes()
 
 
-        fos.close()
-        Log.d(TAG, "DECIFRADO => ${String(bytes)}")
-    }
 }
 

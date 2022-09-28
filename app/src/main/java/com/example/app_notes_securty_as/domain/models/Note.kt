@@ -1,6 +1,6 @@
 package com.example.app_notes_securty_as.domain.models
 
-class Note(
+data class Note(
     var title: String? = null,
     var note: String? = null,
     var dateTime: String? = null,

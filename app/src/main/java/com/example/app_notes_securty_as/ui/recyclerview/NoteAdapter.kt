@@ -1,5 +1,6 @@
 package com.example.app_notes_securty_as.ui.recyclerview
 
+import android.annotation.SuppressLint
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,6 @@ import com.example.app_notes_securty_as.domain.models.Note
 
 class NoteAdapter(noteListener: NoteListener) :
     RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
-
 
     var noteList = listOf<Note>()
         set(value) {
@@ -41,6 +41,7 @@ class NoteAdapter(noteListener: NoteListener) :
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(note: Note, noteListener: NoteListener, position: Int) {
             itemView.findViewById<TextView>(R.id.txt_title).text = note.title
             var textNote = itemView.findViewById<TextView>(R.id.txt_msg_home)
@@ -59,8 +60,6 @@ class NoteAdapter(noteListener: NoteListener) :
             val img = itemView.findViewById<ImageView>(R.id.img_home)
             //-----------GLIDE-------------------------
             Glide.with(itemView).load(note.url).into(img)
-
-
 
         }
 

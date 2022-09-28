@@ -11,10 +11,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64.DEFAULT
-import android.util.Base64.decode
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +21,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.security.crypto.EncryptedFile
+import androidx.security.crypto.MasterKey
 import com.bumptech.glide.Glide
 import com.example.app_notes_securty_as.databinding.ActivityNoteFormBinding
 import com.example.app_notes_securty_as.domain.models.Note
@@ -31,9 +32,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
-import java.lang.Byte.decode
-import java.security.spec.PSSParameterSpec.DEFAULT
-import java.text.DateFormat.DEFAULT
+import java.io.File
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -51,6 +51,8 @@ class NoteFormActivity : AppCompatActivity() {
     private val noteDAO = NoteDAO()
     private lateinit var db: FirebaseFirestore
     private lateinit var image: String
+    private lateinit var editTitle: CharSequence
+    private lateinit var editNote: CharSequence
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -58,9 +60,9 @@ class NoteFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNoteFormBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //register
+        //---- register to get image ------
         registerActivityforResult()
-
+        //---------------------------------
         db = Firebase.firestore
 
         imgForm = binding.formImg
@@ -71,13 +73,17 @@ class NoteFormActivity : AppCompatActivity() {
         }
 
         binding.btnSave.setOnClickListener {
+            editTitle = binding.editTitle.text
+            editNote = binding.editNote.text
             saveData()
-
+            cypher(editTitle.toString().toByteArray(), "title.txt")
+            val baseImage = imgBase64().toByteArray()
+            cypher(baseImage, "image.fig")
         }
 
-
         binding.btnTeste.setOnClickListener {
-
+            //decrypt("title.txt")
+            //decrypt( "image.fig")
         }
 
     }
@@ -136,11 +142,12 @@ class NoteFormActivity : AppCompatActivity() {
 
     private fun addNote(url: String, dateTime: String) {
         val note = Note(
-            "${binding.editTitle.text}",
-            "${binding.editNote.text}",
+            "${editTitle}",
+            "${editNote}",
             "$dateTime",
             url
         )
+
 
         noteDAO.addNote(note)
     }
@@ -165,7 +172,7 @@ class NoteFormActivity : AppCompatActivity() {
             Log.d(TAG, "IMDATA  1=> ${taskSnapshot.uploadSessionUri}")
 
             imgRef.downloadUrl.addOnSuccessListener { url ->
-                var imgURL = url.toString()
+                val imgURL = url.toString()
                 Log.d(TAG, "IMDATA  2=> ${imgURL}")
                 Log.d(TAG, "IMDATA  3=> ${url.toString()}")
                 addNote(imgURL, dateTime)
@@ -175,7 +182,7 @@ class NoteFormActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun imgBase64() {
+    private fun imgBase64(): String {
         imgForm.buildDrawingCache()
         val bmap = imgForm.drawingCache
         val bos = ByteArrayOutputStream()
@@ -183,6 +190,9 @@ class NoteFormActivity : AppCompatActivity() {
         val bb = bos.toByteArray()
         image = Base64.getEncoder().encodeToString(bb)
         Log.d(TAG, "IMG => $image")
+
+        return image
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -190,6 +200,45 @@ class NoteFormActivity : AppCompatActivity() {
         val imageBytes = Base64.getDecoder().decode(image)
         val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 
-        //binding.formImg2.setImageBitmap(decodedImage)
+    }
+
+    private fun cypher(byteArray: ByteArray, fileName: String) {
+        val masterKey = MasterKey.Builder(this)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        val file = File(this.filesDir, fileName)
+        if (file.exists()) {
+            file.delete()
+        }
+        val encryptedFile = EncryptedFile.Builder(
+            this,
+            file,
+            masterKey,
+            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build()
+        val fos = encryptedFile.openFileOutput()
+        fos.write(byteArray)
+        fos.write(byteArray)
+        fos.close()
+    }
+    private fun decrypt(fileName: String) {
+        val masterKey = MasterKey.Builder(this)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        val file = File(this.filesDir, fileName)
+
+        val encryptedFile = EncryptedFile.Builder(
+            this,
+            file,
+            masterKey,
+            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build()
+        val fos = encryptedFile.openFileInput()
+        val bytes = fos.readBytes()
+
+
+        fos.close()
+        Log.d(TAG, "DECIFRADO => ${String(bytes)}")
     }
 }
+

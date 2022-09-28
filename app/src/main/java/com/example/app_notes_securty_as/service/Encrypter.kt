@@ -29,7 +29,6 @@ class Encrypter(val byteArray: ByteArray, val fileName: String, val context: Con
         ).build()
         val fos = encryptedFile.openFileOutput()
         fos.write(byteArray)
-        fos.write(byteArray)
         fos.close()
         Log.d(TAG, "CRIPTOGRAFADO!!")
     }

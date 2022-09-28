@@ -72,20 +72,16 @@ class NoteFormActivity : AppCompatActivity() {
             editTitle = binding.editTitle.text
             editNote = binding.editNote.text
             saveData()
-
             val baseImage = imgBase64().toByteArray()
-
-            Encrypter().cypher(
-                editTitle.toString().toByteArray(),
+            val textCypher = Encrypter(editTitle.toString().toByteArray(),
                 "TITLE(${dateTime()}).txt",
-                this,
-            )
-            Encrypter().cypher(
-                baseImage,
+                this)
+            val imageCypher = Encrypter(baseImage,
                 "image(${dateTime()}).fig",
-                this,
-            )
+                this)
 
+            textCypher.getCypher()
+            imageCypher.getCypher()
         }
 
         binding.btnTeste.setOnClickListener {

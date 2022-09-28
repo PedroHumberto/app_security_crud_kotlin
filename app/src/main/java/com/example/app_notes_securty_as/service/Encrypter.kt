@@ -7,9 +7,13 @@ import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import java.io.File
 
-class Encrypter {
+class Encrypter(val byteArray: ByteArray, val fileName: String, val context: Context) {
 
-    fun cypher(byteArray: ByteArray, fileName: String, context: Context,) {
+    fun getCypher(){
+        cypher()
+    }
+
+    private fun cypher() {
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()

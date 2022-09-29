@@ -7,9 +7,13 @@ import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import java.io.File
 
-class Encrypter(val byteArray: ByteArray, val fileName: String, val context: Context) {
+class Encrypter(
+    private val byteArray: ByteArray,
+    private val fileName: String,
+    private val context: Context
+) {
 
-    fun getCypher(){
+    fun getCypher() {
         cypher()
     }
 

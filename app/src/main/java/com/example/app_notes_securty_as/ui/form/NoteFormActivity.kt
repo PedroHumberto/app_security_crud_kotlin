@@ -1,6 +1,7 @@
 package com.example.app_notes_securty_as.ui.form
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
@@ -39,16 +41,14 @@ class NoteFormActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNoteFormBinding
 
-    private var PICK_IMAGE: Int = 1
     private lateinit var imgForm: ImageView
     private var storage = Firebase.storage
-    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    var imgUri: Uri? = null
     private val noteDAO = NoteDAO()
     private lateinit var db: FirebaseFirestore
     private lateinit var image: String
     private lateinit var editTitle: CharSequence
     private lateinit var editNote: CharSequence
+    private var CAMERA_REQUEST = 1000
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,16 +56,14 @@ class NoteFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNoteFormBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //---- register to get image ------
-        registerActivityforResult()
-        //---------------------------------
+
         db = Firebase.firestore
 
         imgForm = binding.formImg
 
         //get image from internal
         imgForm.setOnClickListener {
-            getImage()
+            getCam()
         }
 
         binding.btnSave.setOnClickListener {
@@ -73,73 +71,40 @@ class NoteFormActivity : AppCompatActivity() {
             editNote = binding.editNote.text
             saveData()
             val baseImage = imgBase64().toByteArray()
-            val textCypher = Encrypter(editTitle.toString().toByteArray(),
+            val textCypher = Encrypter(
+                editTitle.toString().toByteArray(),
                 "TITLE(${dateTime()}).txt",
-                this)
-            val imageCypher = Encrypter(baseImage,
+                this
+            )
+            val imageCypher = Encrypter(
+                baseImage,
                 "image(${dateTime()}).fig",
-                this)
+                this
+            )
 
             textCypher.getCypher()
             imageCypher.getCypher()
         }
 
         binding.btnTeste.setOnClickListener {
-            //decrypt("title.txt")
-            //decrypt( "image.fig")
+
         }
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PICK_IMAGE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            activityResultLauncher.launch(intent)
-        } else {
+    @SuppressLint("MissingSuperCall")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras!!.get("data") as Bitmap
+            imgForm.setImageBitmap(imageBitmap)
         }
     }
 
-    private fun getImage() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                PICK_IMAGE
-            )
-        } else {
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            activityResultLauncher.launch(intent)
-        }
-    }
 
-    private fun registerActivityforResult() {
-        activityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback { result ->
-                val resultCode = result.resultCode
-                val imgData = result.data
-                if (resultCode == RESULT_OK && imgData != null) {
-                    imgUri = imgData.data
-
-                    imgUri.let {
-                        Glide.with(this)
-                            .load(it)
-                            .into(imgForm)
-                    }
-                }
-            })
+    private fun getCam(){
+        val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(camIntent, CAMERA_REQUEST)
     }
 
 
@@ -210,7 +175,6 @@ class NoteFormActivity : AppCompatActivity() {
         val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 
     }
-
 
 
 }

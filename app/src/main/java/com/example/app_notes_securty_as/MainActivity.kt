@@ -22,9 +22,6 @@ import java.util.*
 
 //A tela de listagem deve mostrar os dados do usuário logado e permitir o logout.
 //As informações de localização serão acrescentadas automaticamente no início do texto, apenas na inclusão.
-//Acesso à câmera com Intent do sistema.
-//O Banner será exibido na tela de listagem, junto a um botão para desbloqueio da versão Premium.
-//O botão e o Banner ficarão invisíveis após a compra do produto gerenciado que dá direito à versão Premium.
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, OnSuccessListener<Location> {
 

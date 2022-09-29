@@ -8,16 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.app_notes_securty_as.R
 import com.example.app_notes_securty_as.databinding.FragmentHomeBinding
 import com.example.app_notes_securty_as.domain.models.Note
 import com.example.app_notes_securty_as.service.NoteDAO
 import com.example.app_notes_securty_as.ui.form.NoteFormActivity
 import com.example.app_notes_securty_as.ui.recyclerview.NoteAdapter
 import com.example.app_notes_securty_as.ui.recyclerview.NoteListener
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 
 class HomeFragment : Fragment(), NoteListener {
 
@@ -26,11 +26,8 @@ class HomeFragment : Fragment(), NoteListener {
     //-----database----
     private val noteDAO = NoteDAO()
     //---RecyclerView---
-    private lateinit var note : ArrayList<Note>
     private lateinit var lstNote: RecyclerView
     private lateinit var myAdapter: NoteAdapter
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +41,16 @@ class HomeFragment : Fragment(), NoteListener {
             startActivity(formIntent)
 
         }
+        context?.let { MobileAds.initialize(it) {} }
+
+        var mAdManagerAdView = binding.adManagerAdView
+        val adRequest = AdManagerAdRequest.Builder().build()
+        mAdManagerAdView.loadAd(adRequest)
+
+        binding.btnPremium.setOnClickListener {
+            binding.adManagerAdView.visibility = View.INVISIBLE
+        }
+
 
 
         //-----------------adapter
@@ -54,7 +61,7 @@ class HomeFragment : Fragment(), NoteListener {
         myAdapter.noteList
         lstNote.adapter = myAdapter
 
-
+        //load notes
         setNotes()
 
         return binding.root

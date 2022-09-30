@@ -1,62 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment"
+    android:background="@color/back_ground_app"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:orientation="vertical"
-    android:background="@color/back_ground_app"
-    android:id="@+id/container"
-    >
+    tools:context=".ui.home.HomeFragment">
 
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="NOTES"
+        android:layout_marginTop="12dp"
         android:gravity="center"
-        android:textSize="24dp"
+        android:text="NOTES"
         android:textColor="@color/app_title_color"
-        />
+        android:textSize="24dp"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_user"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:text="Usuario: Pedro"
         android:textColor="@color/black"
-        android:layout_marginTop="10dp"
-        android:text="Usuario: Pedro" />
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
         android:id="@+id/txt_email"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="12dp"
+        android:text="Email: pedro@email.com"
         android:textColor="@color/black"
-        android:text="Email: pedro@email.com" />
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/txt_user" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/row_notes"
         android:layout_width="match_parent"
         android:layout_height="265dp"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="32dp"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/txt_email" />
 
     <Button
         android:id="@+id/btn_noteform"
         android:layout_width="150dp"
         android:layout_height="64dp"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:text="Add Note" />
+        android:layout_marginTop="20dp"
+        android:text="Add Note"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintHorizontal_bias="0.498"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/row_notes" />
 
     <Button
         android:id="@+id/btn_premium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Premium" />
+        android:layout_marginTop="28dp"
+        android:text="Premium"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintHorizontal_bias="0.5"
+        ads:layout_constraintStart_toEndOf="@+id/btn_logout"
+        ads:layout_constraintTop_toBottomOf="@+id/btn_noteform" />
 
     <Button
         android:id="@+id/btn_logout"
@@ -64,20 +85,28 @@
         android:layout_height="50dp"
         android:layout_gravity="end"
 
-        android:text="Logout" />
+        android:layout_marginTop="28dp"
+        android:text="Logout"
+        ads:layout_constraintEnd_toStartOf="@+id/btn_premium"
+        ads:layout_constraintHorizontal_bias="0.5"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/btn_noteform" />
 
     <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adManagerAdView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="24dp"
         ads:adSize="BANNER"
-        ads:adUnitId="/6499/example/banner" />
+        ads:adUnitId="/6499/example/banner"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintHorizontal_bias="0.494"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/btn_logout" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

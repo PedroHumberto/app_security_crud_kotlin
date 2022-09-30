@@ -2,6 +2,7 @@ package com.example.app_notes_securty_as
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -14,14 +15,13 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.app_notes_securty_as.databinding.ActivityMainBinding
+import com.example.app_notes_securty_as.ui.home.HomeActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import java.util.*
-
-
-//A tela de listagem deve mostrar os dados do usuário logado e permitir o logout.
-//As informações de localização serão acrescentadas automaticamente no início do texto, apenas na inclusão.
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, OnSuccessListener<Location> {
 
@@ -32,20 +32,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, OnSuccessListene
     private var latitude: String? = null
     private var longitude: String? = null
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        auth = FirebaseAuth.getInstance()
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         getLastLocation()
 
-
-
-
+    }
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if(currentUser != null){
+            val homeIntent = Intent(this, HomeActivity::class.java)
+            startActivity(homeIntent)
+            Log.d(TAG, "Current USER => ${currentUser.uid}")
+        }
     }
     override fun onClick(v: View?) {
         TODO("Not yet implemented")

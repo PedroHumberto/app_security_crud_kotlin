@@ -4,6 +4,7 @@ data class Note(
     var title: String? = null,
     var note: String? = null,
     var dateTime: String? = null,
-    var url: String? = null
+    var url: String? = null,
+    var idAuth: String? = null
 ) {
 }

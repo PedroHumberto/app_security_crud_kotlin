@@ -23,7 +23,8 @@ class NoteDAO {
             }
     }
 
-    fun getNotes(): Task<QuerySnapshot>{
-        return db.collection(COLLECTION).get()
+    //apenas notas feitas pelo usuario com idAuth pode ter acesso aos itens.
+    fun getNotes(idAuth: String): Task<QuerySnapshot>{
+        return db.collection(COLLECTION).whereEqualTo("idAuth", idAuth).get()
     }
 }
